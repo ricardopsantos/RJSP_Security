@@ -22,7 +22,7 @@ let package = Package(
     platforms: [.macOS(.v10_15)],
     dependencies: [
         .package(url: "https://github.com/vapor/vapor.git", from: "4.36.0"),
-        .package(name: "rjs-security", url: "https://github.com/ricardopsantos/RJSP_Security", from: "1.0.6")
+        .package(name: "rjs-security", url: "https://github.com/ricardopsantos/RJSP_Security", from: "1.0.0")
     ],
     targets: [
         .target(name: appName, dependencies: dependencies, swiftSettings: [swiftSettings]),

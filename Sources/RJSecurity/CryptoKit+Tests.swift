@@ -28,7 +28,7 @@ extension CryptoKit {
             return ""
         }
 
-        // Enconding public key so that it can be sent to the receiver
+        // Enconding public key so that it can be sent to the receiver (over the network)
         let base64String = CryptoKit.base64String(with: BobReceiver.publicKey)
         let bobPublicKey = CryptoKit.publicKey(with: base64String)!
         

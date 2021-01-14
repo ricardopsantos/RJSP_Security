@@ -5,25 +5,6 @@
 import Foundation
 import CryptoKit
 
-/*
-public struct RJSecurityExtension<Target> {
-    let target: Target
-    init(_ target: Target) { self.target = target }
-}
-
-public protocol RJSecurityExtensionCompatible { }
-
-public extension RJSecurityExtensionCompatible {
-    var rjs: RJSecurityExtension<Self> { return RJSecurityExtension(self) }
-}
-
-extension NSObject: RJSecurityExtensionCompatible { }
-*/
-
-//
-// Extensions
-//
-
 public extension Data {
     var stringFromUtf8: String? { return String(data: self, encoding: .utf8) }
     var base64String: String { self.base64EncodedString(options: Data.Base64EncodingOptions(rawValue: 0)) }

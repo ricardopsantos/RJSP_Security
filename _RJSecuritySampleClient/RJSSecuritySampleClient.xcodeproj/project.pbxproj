@@ -386,7 +386,7 @@
 			repositoryURL = "https://github.com/ricardopsantos/RJSP_Security";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 1.0.6;
+				minimumVersion = 1.0.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
