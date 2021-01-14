@@ -17,7 +17,7 @@
 
 Utilities arround [Apple CryptoKit](https://developer.apple.com/documentation/cryptokit)
 
-## Usage
+## Sample Usage
 
 ```swift
 
@@ -53,8 +53,17 @@ let decryptedData        = CryptoKit.decrypt(encryptedData: encryptedData, using
 
 ```
 
+## Sample working rojects
 
+Inside the folders __RJSecuritySampleClient__ and __RJSecuritySampleServer__ can be found sample app (Swift) and WebServer (Vapor) ready to use. Booth the app and server have RJSP_Security lib installed via SPM and work as a live example.
 
-_RJSecuritySampleClient
+Open both projects on Xcode, start the server, and then start the app.
 
-_RJSecuritySampleServer
+![alt text](_Documents/image1.png)
+
+The flow is as follows:
+
+* The app (client) send is public key to the server (on the request body) and his user id (on the request header)
+* The server store the user id and the user public key and returns his public key
+* The app (client) receives the server public key, and then do a secure/encripted request to the server
+* The server receives the encripted request, decript it using the client public key and his (server) private key and returns the decripted message
