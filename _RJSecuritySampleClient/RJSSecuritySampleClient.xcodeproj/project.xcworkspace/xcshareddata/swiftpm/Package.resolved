@@ -1,0 +1,16 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "rjs-security",
+        "repositoryURL": "https://github.com/ricardopsantos/RJSP_Security",
+        "state": {
+          "branch": null,
+          "revision": "e2460304903838283894da2235d2f8b18a700c6d",
+          "version": "1.0.6"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

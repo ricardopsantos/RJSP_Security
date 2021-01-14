@@ -1,0 +1,14 @@
+.DS_Store
+/.build
+/Packages
+/*.xcodeproj
+xcuserdata/
+
+
+/_RJSecuritySampleServer/Packages/*
+/_RJSecuritySampleServer/xcuserdata/*
+/_RJSecuritySampleServer/DerivedData/*
+
+/_RJSecuritySampleServer/.build
+/_RJSecuritySampleServer/.swiftpm
+/_RJSecuritySampleServer/.DS_Store
