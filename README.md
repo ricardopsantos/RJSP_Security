@@ -53,17 +53,19 @@ let decryptedData        = CryptoKit.decrypt(encryptedData: encryptedData, using
 
 ```
 
-## Sample working rojects
+## Sample working projects
 
-Inside the folders __RJSecuritySampleClient__ and __RJSecuritySampleServer__ can be found sample app (Swift) and WebServer (Vapor) ready to use. Booth the app and server have RJSP_Security lib installed via SPM and work as a live example.
+Inside the folders __RJSecuritySampleClient__ and __RJSecuritySampleServer__ can be found sample client app (Swift) and sample server (Vapor Swift) ready to use. 
 
-Open both projects on Xcode, start the server, and then start the app.
+Booth the client app and server use RJSP_Security lib installed via SPM and are a live working example of the key exchange process, and then secure comunication.
+
+Open both projects on Xcode, start the server (first), and then start the app.
 
 ![alt text](_Documents/image1.png)
 
-The flow is as follows:
+The example flow is as follows:
 
-* The app (client) send is public key to the server (on the request body) and his user id (on the request header)
-* The server store the user id and the user public key and returns his public key
-* The app (client) receives the server public key, and then do a secure/encripted request to the server
-* The server receives the encripted request, decript it using the client public key and his (server) private key and returns the decripted message
+* The app (client) send is public key to the server (on the request body). Also sends his userID (on the request header). 
+* The server store the userID and the user public key (for future secure comunication) and returns to the client app the server public key.
+* The app (client) receives the server public key, and then with is (client) private key do a secure/encripted request to the server.
+* The server receives the encripted request, and decript it using the client public key (stored on setep 1) and his (server) private key. After decripting the message, the server just return it as a "proof" of sucess.
