@@ -3,6 +3,8 @@
 
 import PackageDescription
 
+let exclude = ["_RJSecuritySampleClient/", "_Documents/"]
+
 let package = Package(
     name: "rjs-security",
     platforms: [.iOS(.v13), .macOS(.v10_15)],
@@ -12,7 +14,7 @@ let package = Package(
     dependencies: [],
     targets: [
         .target(
-            name: "RJSecurity", dependencies: []),
+            name: "RJSecurity", dependencies: [], exclude: exclude),
         .testTarget(
             name: "RJSecurityTests",
             dependencies: ["RJSecurity"]),

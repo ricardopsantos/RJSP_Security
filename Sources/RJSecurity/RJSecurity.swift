@@ -1,3 +1,7 @@
+
+
 struct RJSecurity {
-    var text = CryptoKit.doTestWith(secret: "my secret!")
+    //static func sample1() -> Bool {
+    //    return CryptoKit.sample1()
+    //}
 }
