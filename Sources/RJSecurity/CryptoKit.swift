@@ -94,8 +94,9 @@ public extension CryptoKit {
     }
     
     /// Receives an encrypted String, and converts into encrypted Data
-    static func decodeFromNetwork(string: String) -> Data? {
-        return Data(base64Encoded: string)
+    static func decodeFromNetwork(string: String?) -> Data? {
+        guard string != nil else { return nil }
+        return Data(base64Encoded: string!)
     }
 }
 
