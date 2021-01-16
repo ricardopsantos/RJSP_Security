@@ -17,6 +17,28 @@
 
 Utilities arround [Apple CryptoKit](https://developer.apple.com/documentation/cryptokit)
 
+
+## Index
+
+```swift
+public static func generateSymmetricKeyBetween(_ a: Curve25519.KeyAgreement.PrivateKey, and b: Curve25519.KeyAgreement.PublicKey, salt: Data) -> SymmetricKey?
+public static func encrypt(plainSecret: Data, using symmetricKey: SymmetricKey) -> Data?
+public static func encrypt(plainSecret: Data, sender: Curve25519.KeyAgreement.PrivateKey, receiver: Curve25519.KeyAgreement.PublicKey, salt: Data) -> Data?
+public static func decrypt(encryptedData: Data, using symmetricKey: SymmetricKey) -> Data?
+public static func decrypt(encryptedData: Data, receiver: Curve25519.KeyAgreement.PrivateKey, sender: Curve25519.KeyAgreement.PublicKey, salt: Data) -> Data?
+public static func generatePrivateKey() -> Curve25519.KeyAgreement.PrivateKey
+public static func base64String(with publicKey: Curve25519.KeyAgreement.PublicKey) -> String
+public static func publicKey(with base64String: String) -> Curve25519.KeyAgreement.PublicKey?
+
+public struct PublicKeysHotStorage {
+    public static func store(publicKey base64String: String, for userID: String)
+    public static func store(publicKey: Curve25519.KeyAgreement.PublicKey, for userID: String)
+    public static func get(for userID: String) -> Curve25519.KeyAgreement.PublicKey?
+    public static func delete(for userID: String)
+    public static func cleanAll()
+}
+```
+
 ## Sample Usage
 
 ```swift
