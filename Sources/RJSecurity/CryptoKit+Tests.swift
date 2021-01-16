@@ -83,5 +83,28 @@ extension CryptoKit {
         return publicKeyIntoBase64String == CryptoKit.base64String(with: publicKeyFromBase64String)
     }
     
+    static func testPublicKeysHotStorage() -> Bool {
+        
+        let userId = "\(UUID())"
+        let publicKey = CryptoKit.generatePrivateKey().publicKey
+        
+        // Test : After a clean up, no keys should exist
+        CryptoKit.PublicKeysHotStorage.store(publicKey: publicKey.base64String, for: userId)
+        CryptoKit.PublicKeysHotStorage.cleanAll()
+        guard CryptoKit.PublicKeysHotStorage.get(for: userId) == nil else { return false }
+        
+        // Test : After fetching a stored Public Key, should have the same value that the key that was used to store it
+        CryptoKit.PublicKeysHotStorage.store(publicKey: publicKey.base64String, for: userId)
+        let storedPublicKey = CryptoKit.PublicKeysHotStorage.get(for: userId)
+        guard storedPublicKey?.base64String == publicKey.base64String else { return false }
+        
+        // Test : Deleting a key
+        CryptoKit.PublicKeysHotStorage.store(publicKey: publicKey.base64String, for: userId)
+        CryptoKit.PublicKeysHotStorage.delete(for: userId)
+        guard CryptoKit.PublicKeysHotStorage.get(for: userId) == nil else { return false }
+
+        return true
+    }
+    
 }
 
