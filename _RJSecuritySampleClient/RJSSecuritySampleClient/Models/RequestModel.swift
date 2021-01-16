@@ -5,9 +5,11 @@
 
 import Foundation
 
-public struct Request {
-    public let route: String
-    public let httpMethod: String
+public struct RequestModel {
+    public let path: String
+    public let httpMethod: HttpMethod
     public let httpBody: [String: String]
     public let userId: String
 }
+
+

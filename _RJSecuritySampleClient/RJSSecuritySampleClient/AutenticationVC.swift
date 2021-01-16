@@ -5,8 +5,22 @@
 
 import UIKit
 import CryptoKit
+import Combine
 //
 import RJSecurity
+
+
+
+//
+//  Created by Alexey Naumov on 04.04.2020.
+//  Copyright © 2020 Alexey Naumov. All rights reserved.
+//
+
+import Combine
+
+
+
+private var cancelBag = CancelBag()
 
 let privateKey = CryptoKit.newPrivateKeyInstance()
 let sharedSalt = "ba00524d-ad11-46ac-a596-0a2998588b5a".utf8Data!
@@ -18,38 +32,46 @@ class AutenticationVC: UIViewController {
         let alert = UIAlertController(title: "Server response", message: with, preferredStyle: .alert)
         self.present(alert, animated: true, completion: nil)
     }
-    
+        
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let sessionRequest = WebAPI.RequestBuilder.session(publicKey: privateKey.publicKey,
-                                                           userID: userID)
-        
-        WebAPI.executeRequest(requestModel: sessionRequest) { (result) -> (Void) in
-            
-            // Extract server public key to encript our message, and map it into Base64 string
-            let serverPublicKey = CryptoKit.publicKey(with: result)!
+        let webAPI = WebAPI()
 
-            // Setup SECURE request
-            
-            let plainHumanMessage = "Hi! \(Date())"
-            let plainDataMessage = CryptoKit.humanFriendlyPlainMessageToDataPlainMessage(plainHumanMessage)!
-            let encryptedMessage = CryptoKit.encrypt(data: plainDataMessage,
+        // Session request...
+        let sessionPublisher = webAPI.session(publicKey: privateKey.publicKey, userID: userID)
+
+        // Session response with server public key...
+        let serverPublicKeyPublisher = sessionPublisher.compactMap { $0.publicKey }
+        
+        // Secure request...
+        let secureRequestPublisher = serverPublicKeyPublisher.flatMap { (publicKey) -> AnyPublisher<ResponseDto.SecureRequest, APIError> in
+            let plainHumanMessage = "Hi server. Can you uppercase me? \(Date())"
+            let serverPublicKey   = CryptoKit.publicKey(with: publicKey)!
+            let plainDataMessage  = CryptoKit.humanFriendlyPlainMessageToDataPlainMessage(plainHumanMessage)!
+            let encryptedMessage  = CryptoKit.encrypt(data: plainDataMessage,
                                                   sender: privateKey,
                                                   receiver: serverPublicKey,
                                                   salt: sharedSalt)
-                
-            let secureRequest = WebAPI.RequestBuilder.secure(encrypted: encryptedMessage!,
-                                                             userID: userID)
-            
-            // Do SECURE request
-            WebAPI.executeRequest(requestModel: secureRequest) { (result) -> (Void) in
-                self.showAlert(with: result)
-            }
-        
+            return webAPI.secure(encrypted: encryptedMessage!, userID: userID)
         }
+        
+        // Handle secure request response
+        secureRequestPublisher.sink { (result) in
+            print(result)
+        } receiveValue: { (secureResponse) in
+            self.showAlert(with: secureResponse.message)
+        }.store(in: cancelBag)
+
 
     }
 
 
 }
+
+
+
+
+
+
+
