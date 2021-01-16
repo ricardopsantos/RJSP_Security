@@ -17,69 +17,63 @@
 
 Utilities arround [Apple CryptoKit](https://developer.apple.com/documentation/cryptokit)
 
-
-## Index
-
-```swift
-public static func generateSymmetricKeyBetween(_ a: Curve25519.KeyAgreement.PrivateKey, and b: Curve25519.KeyAgreement.PublicKey, salt: Data) -> SymmetricKey?
-public static func encrypt(plainSecret: Data, using symmetricKey: SymmetricKey) -> Data?
-public static func encrypt(plainSecret: Data, sender: Curve25519.KeyAgreement.PrivateKey, receiver: Curve25519.KeyAgreement.PublicKey, salt: Data) -> Data?
-public static func decrypt(encryptedData: Data, using symmetricKey: SymmetricKey) -> Data?
-public static func decrypt(encryptedData: Data, receiver: Curve25519.KeyAgreement.PrivateKey, sender: Curve25519.KeyAgreement.PublicKey, salt: Data) -> Data?
-public static func generatePrivateKey() -> Curve25519.KeyAgreement.PrivateKey
-public static func base64String(with publicKey: Curve25519.KeyAgreement.PublicKey) -> String
-public static func publicKey(with base64String: String) -> Curve25519.KeyAgreement.PublicKey?
-
-public struct PublicKeysHotStorage {
-    public static func store(publicKey base64String: String, for userID: String)
-    public static func store(publicKey: Curve25519.KeyAgreement.PublicKey, for userID: String)
-    public static func get(for userID: String) -> Curve25519.KeyAgreement.PublicKey?
-    public static func delete(for userID: String)
-    public static func cleanAll()
-}
-```
-
 ## Sample Usage
 
-```swift
+### Given...
 
+```swift 
 struct AliceSender {
     private init() { }
-    static let privateKey = CryptoKit.generatePrivateKey()
+    static let privateKey = CryptoKit.newPrivateKeyInstance()
     static let publicKey  = privateKey.publicKey
 }
  
 struct BobReceiver {
     private init() { }
-    static let privateKey = CryptoKit.generatePrivateKey()
+    static let privateKey = CryptoKit.newPrivateKeyInstance()
     static let publicKey  = privateKey.publicKey
 }
 
-let secret = "my secret!"
+static let salt = "6beab91f-4a1a-4449-96cb-b6e0edb30776".data(using: .utf8)!
+static let secretPlain = "my secret"
+static let secretPlainData = CryptoKit.humanFriendlyPlainMessageToDataPlainMessage(secretPlain)!
+```
 
-guard let salt = "ba00524d-ad11-46ac-a596-0a2998588b5a".utf8Data,
-      let message = secret.utf8Data else {
-    // Invalid salt or secret
-    return ""
-}
+### Sample Usage 1 : Using symmetric keys
 
-// Enconding public key so that it can be sent to the receiver
-let base64String = CryptoKit.base64String(with: BobReceiver.publicKey)
-let bobPublicKey = CryptoKit.publicKey(with: base64String)!
+```swift
+// Sender: Generating symmetric key and encrpting data USING shared symmetric key
+let senderSymmetricKey = CryptoKit.generateSymmetricKeyBetween(AliceSender.privateKey, and: BobReceiver.publicKey, salt: salt)!
+let encryptedData      = CryptoKit.encrypt(data: secretPlainData, using: senderSymmetricKey)!
 
-let senderSymmetricKey = CryptoKit.generateSymmetricKeyBetween(AliceSender.privateKey, and: bobPublicKey, salt: salt)!
-let encryptedData      = CryptoKit.encrypt(plainSecret: message, using: senderSymmetricKey)!
-
+// Receiver: Generating symmetric key and decrypting data USING shared symmetric key
 let reveiverSymmetricKey = CryptoKit.generateSymmetricKeyBetween(BobReceiver.privateKey, and: AliceSender.publicKey, salt: salt)!
 let decryptedData        = CryptoKit.decrypt(encryptedData: encryptedData, using: reveiverSymmetricKey)
 
 ```
 
+### Sample Usage 2 : Using public and private keys
+
+
+```swift
+// Sender: Generating symmetric key and encrpting data USING public and private keys
+let encryptedData = CryptoKit.encrypt(data: secretPlainData,
+                                      sender: AliceSender.privateKey,
+                                      receiver: BobReceiver.publicKey,
+                                      salt: salt)!
+
+// Receiver: Generating symmetric key and decrypting data USING public and private keys
+let decryptedData = CryptoKit.decrypt(encryptedData: encryptedData,
+                                      receiver: BobReceiver.privateKey,
+                                      sender: AliceSender.publicKey,
+                                      salt: salt)
+```
+
 ## Sample working projects
 
-Inside the folders __RJSecuritySampleClient__ and __RJSecuritySampleServer__ can be found sample client app (Swift) and sample server (Vapor Swift) ready to use. 
+Inside the folders __RJSecuritySampleClient__ and __RJSecuritySampleServer__ can be found sample client app (Swift) and sample server web app (Vapor Swift) ready to use. 
 
-Booth the client app and server use RJSP_Security lib installed via SPM and are a live working example of the key exchange process, and then secure comunication.
+Booth the client app and server use RJSP_Security lib installed via SPM and are a live working example of the key exchange process, and then a secure comunication.
 
 Open both projects on Xcode, start the server (first), and then start the app.
 
@@ -87,7 +81,74 @@ Open both projects on Xcode, start the server (first), and then start the app.
 
 The example flow is as follows:
 
-* The app (client) send is public key to the server (on the request body). Also sends his userID (on the request header). 
-* The server store the userID and the user public key (for future secure comunication) and returns to the client app the server public key.
-* The app (client) receives the server public key, and then with is (client) private key do a secure/encripted request to the server.
-* The server receives the encripted request, and decript it using the client public key (stored on setep 1) and his (server) private key. After decripting the message, the server just return it as a "proof" of sucess.
+__Step 1 :__ The app (client) send is public key to the server (on the request body). It also sends his userID (on the request header). 
+
+```swift
+static func session(publicKey: Curve25519.KeyAgreement.PublicKey, userID: String) -> Request {
+    let httpBody = [
+        "publicKey": CryptoKit.base64String(with: publicKey),
+        "userId": userID
+    ]
+    
+    return Request(route: "session",
+                   httpMethod: "post",
+                   httpBody: httpBody,
+                   userId: userID)
+}
+```
+__Step 2:__ The server store the userID and the user public key (for future secure comunication) and returns to the client app the server public key.
+
+```swift
+app.post("session") { req -> String in
+  guard let userId = req.headerValue("USER_ID") else {
+    // User id must be sent on the request header
+    throw Abort(.badRequest)
+  }
+        
+  // Store user public key
+  let sessionModel = try req.content.decode(SessionModel.self)
+  CryptoKit.PublicKeysHotStorage.store(publicKey: sessionModel.publicKey, for: userId)
+
+  // Return the web server public key
+  return privateKey.publicKey.toBase64String
+}
+```
+    
+__Step 3:__ The client app receives the server public key, and then with is (client) private key do a secure/encripted request to the server.
+
+```swift
+static func secure(encrypted: Data, userID: String) -> Request {
+    let httpBody = ["secret": CryptoKit.encodeToSendOverNetwork(encrypted: encrypted)]
+    return Request(route: "secureRequest",
+                   httpMethod: "post",
+                   httpBody: httpBody,
+                   userId: userID)
+}
+```
+
+__Step 4:__ The server receives the encripted request, and decript it using the client public key (stored on setep 1) and his (server) private key. After decripting the message, the server just return it as a "proof" of sucess.
+
+```swift
+app.post("secureRequest") { req -> String in
+  guard let userId = req.headerValue("USER_ID"),
+        let clientPublicKey = CryptoKit.PublicKeysHotStorage.get(for: userId) else {
+          // User id must be sent on header and
+          // the server must know the user public key allready
+          throw Abort(.badRequest)
+      }
+      let secureRequestBody = try req.content.decode(SecureRequestModel.self)
+        
+      let encryptedData = secureRequestBody.secretData
+        
+      guard let decryptData = CryptoKit.decrypt(encryptedData: encryptedData!,
+                                                receiver: privateKey,
+                                                sender: clientPublicKey,
+                                                salt: sharedSalt!) else {
+          throw Abort(.notAcceptable)
+      }
+      let humanFriendlyPlainMessage = CryptoKit.dataPlainMessageToHumanFriendlyPlainMessage(decryptData)
+
+      return "Your secret was [\(humanFriendlyPlainMessage ?? "")]"
+
+}
+```

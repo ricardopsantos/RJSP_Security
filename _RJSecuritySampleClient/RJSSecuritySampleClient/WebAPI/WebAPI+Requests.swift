@@ -19,7 +19,6 @@ public extension WebAPI {
 public extension WebAPI.RequestBuilder {
     
     static func session(publicKey: Curve25519.KeyAgreement.PublicKey, userID: String) -> Request {
-
         let httpBody = [
             "publicKey": CryptoKit.base64String(with: publicKey),
             "userId": userID
@@ -33,7 +32,6 @@ public extension WebAPI.RequestBuilder {
     
     static func secure(encrypted: Data, userID: String) -> Request {
         let httpBody = ["secret": CryptoKit.encodeToSendOverNetwork(encrypted: encrypted)]
-        print(httpBody)
         return Request(route: "secureRequest",
                        httpMethod: "post",
                        httpBody: httpBody,

@@ -38,13 +38,8 @@ func routes(_ app: Application) throws {
             throw Abort(.notAcceptable)
         }
         let humanFriendlyPlainMessage = CryptoKit.dataPlainMessageToHumanFriendlyPlainMessage(decryptData)
-       /* let plain = CryptoKit.humanFriendlyPlainMessageToDataPlainMessage("Your secret was [\(humanFriendlyPlainMessage)]")
-        
-        let response = SecureRequestModel(plain: plain!,
-                                          sender: privateKey,
-                                          receiver: clientPublicKey,
-                                          salt: sharedSalt!)*/
-        return "Your secret was [\(humanFriendlyPlainMessage)]"
+
+        return "Your secret was [\(humanFriendlyPlainMessage ?? "")]"
 
     }
     
