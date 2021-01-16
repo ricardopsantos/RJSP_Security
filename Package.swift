@@ -3,7 +3,7 @@
 
 import PackageDescription
 
-let exclude = ["_RJSecuritySampleClient/", "_Documents/"]
+let exclude = ["_Documents/", "_RJSecuritySampleClient/", "_RJSecuritySampleServer/"]
 
 let package = Package(
     name: "rjs-security",
