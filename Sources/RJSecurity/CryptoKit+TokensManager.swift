@@ -12,15 +12,15 @@ public extension CryptoKit {
         
         private init() { }
         
-        static func store(publicKey: String, for userID: String) {
+        public static func store(publicKey: String, for userID: String) {
             HotStorage.add(object: publicKey, withKey: userID)
         }
         
-        static func store(publicKey: Curve25519.KeyAgreement.PublicKey, for userID: String) {
+        public static func store(publicKey: Curve25519.KeyAgreement.PublicKey, for userID: String) {
             HotStorage.add(object: publicKey.base64String, withKey: userID)
         }
         
-        static func get(for userID: String) -> Curve25519.KeyAgreement.PublicKey? {
+        public static func get(for userID: String) -> Curve25519.KeyAgreement.PublicKey? {
             guard let pk64String = HotStorage.get(key: userID),
                   let pk = CryptoKit.publicKey(with: pk64String as String) else  {
                 return nil
@@ -28,11 +28,11 @@ public extension CryptoKit {
             return pk
         }
         
-        static func delete(for userID: String) {
+        public static func delete(for userID: String) {
             HotStorage.delete(key: userID)
         }
         
-        static func cleanAll() {
+        public static func cleanAll() {
             HotStorage.clean()
         }
     }
