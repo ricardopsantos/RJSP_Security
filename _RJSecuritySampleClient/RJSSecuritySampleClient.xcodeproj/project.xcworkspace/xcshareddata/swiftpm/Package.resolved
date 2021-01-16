@@ -1,0 +1,25 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "rjps-lib-uf",
+        "repositoryURL": "https://github.com/ricardopsantos/RJSLibUF",
+        "state": {
+          "branch": "master",
+          "revision": "f77247b85bf278e1bdb79017ed2e24a93617c294",
+          "version": null
+        }
+      },
+      {
+        "package": "rjs-security",
+        "repositoryURL": "https://github.com/ricardopsantos/RJSP_Security",
+        "state": {
+          "branch": "develop",
+          "revision": "832152a52b0d7a45d9348120a2406c60687d8dfe",
+          "version": null
+        }
+      }
+    ]
+  },
+  "version": 1
+}
