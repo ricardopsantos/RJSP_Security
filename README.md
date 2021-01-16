@@ -71,15 +71,15 @@ let decryptedData = CryptoKit.decrypt(encryptedData: encryptedData,
 
 ## Sample working projects
 
-Inside the folders [__RJSecuritySampleClient__]((https://github.com/ricardopsantos/RJSP_Security/tree/master/_RJSecuritySampleClient)) and [__RJSecuritySampleServer__](https://github.com/ricardopsantos/RJSP_Security/tree/master/_RJSecuritySampleServer) can be found sample client app (Swift) and sample server web app (Vapor Swift) ready to use. 
+Inside the folders [__RJSecuritySampleClient__](https://github.com/ricardopsantos/RJSP_Security/tree/master/_RJSecuritySampleClient)) and [__RJSecuritySampleServer__](https://github.com/ricardopsantos/RJSP_Security/tree/master/_RJSecuritySampleServer) can be found sample client app (Swift) and sample server web app (Vapor Swift) ready to use. 
 
-Both the client app and server use RJSP_Security lib installed via SPM and are a live working example of the key exchange process, follewd by a secure comunication.
+Both the client app and server use [__RJSP_Security__](https://github.com/ricardopsantos/RJSP_Security) lib installed via SPM and are a live working example of the key exchange process, follewd by a secure comunication.
 
 ![alt text](_Documents/image1.png)
 
 Open both projects on Xcode
 
-* Start the server (first
+* Start the server.
 * Start the app.
 
 The projects samples flow is as follows:

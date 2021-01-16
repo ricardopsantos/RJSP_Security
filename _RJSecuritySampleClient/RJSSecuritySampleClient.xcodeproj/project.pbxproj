@@ -453,7 +453,7 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/ricardopsantos/RJSP_Security";
 			requirement = {
-				branch = develop;
+				branch = master;
 				kind = branch;
 			};
 		};

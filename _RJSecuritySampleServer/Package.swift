@@ -12,8 +12,8 @@ dependencies.append(rjpsSecurityTargetDependency)
 
 let rjSecurityMasterPackageDepedency: Package.Dependency  = .package(name: "rjs-security", url: "https://github.com/ricardopsantos/RJSP_Security", .branch("master"))
 let rjSecurityDevelopPackageDepedency: Package.Dependency = .package(name: "rjs-security", url: "https://github.com/ricardopsantos/RJSP_Security", .branch("develop"))
-let rjSecurityCurrentPackageDepedency: Package.Dependency = .package(name: "rjs-security", url: "https://github.com/ricardopsantos/RJSP_Security", .upToNextMajor(from: "1.0.0"))
-let rjSecurityPackageDepedency = rjSecurityDevelopPackageDepedency
+let rjSecurityCurrentPackageDepedency: Package.Dependency = .package(name: "rjs-security", url: "https://github.com/ricardopsantos/RJSP_Security", .upToNextMajor(from: "1.1.1"))
+let rjSecurityPackageDepedency = rjSecurityMasterPackageDepedency
 
 let package = Package(
     name: appName,

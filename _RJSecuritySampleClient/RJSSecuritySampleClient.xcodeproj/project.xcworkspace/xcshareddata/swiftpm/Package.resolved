@@ -14,8 +14,8 @@
         "package": "rjs-security",
         "repositoryURL": "https://github.com/ricardopsantos/RJSP_Security",
         "state": {
-          "branch": "develop",
-          "revision": "832152a52b0d7a45d9348120a2406c60687d8dfe",
+          "branch": "master",
+          "revision": "44ae5dec0d47b7f3df4f6ba707183060be85230f",
           "version": null
         }
       }
