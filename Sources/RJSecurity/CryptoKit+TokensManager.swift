@@ -12,8 +12,9 @@ public extension CryptoKit {
         
         private init() { }
         
-        public static func store(publicKey: String, for userID: String) {
-            HotStorage.add(object: publicKey, withKey: userID)
+        public static func store(publicKey base64String: String, for userID: String) {
+            guard let publicKey = CryptoKit.publicKey(with: base64String) else { return } // Not a valid public key
+            store(publicKey: publicKey, for: userID)
         }
         
         public static func store(publicKey: Curve25519.KeyAgreement.PublicKey, for userID: String) {
