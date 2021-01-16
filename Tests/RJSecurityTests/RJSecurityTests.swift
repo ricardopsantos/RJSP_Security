@@ -23,11 +23,16 @@ final class RJSecurityTests: XCTestCase {
         XCTAssert(CryptoKit.testPublicKeysHotStorage())
     }
     
+    func testDataToStringConversions() {
+        XCTAssert(CryptoKit.testDataToStringConversions())
+    }
+    
     static var allTests = [
         ("testSampleUsage1", testSampleUsage1),
         ("testSampleUsage2", testSampleUsage2),
         ("testSymetricKeysGeneration", testSymetricKeysGeneration),
         ("testPublicKeyToBase64AndThenBackToPublicKey", testPublicKeyToBase64AndThenBackToPublicKey),
         ("testPublicKeysHotStorage", testPublicKeysHotStorage),
+        ("testDataToStringConversions", testDataToStringConversions),
     ]
 }

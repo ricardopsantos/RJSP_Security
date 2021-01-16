@@ -20,9 +20,9 @@ fileprivate struct TestVars {
         static let publicKey  = privateKey.publicKey
     }
 
-    static let salt = "6beab91f-4a1a-4449-96cb-b6e0edb30776".utf8Data!
+    static let salt = "6beab91f-4a1a-4449-96cb-b6e0edb30776".data(using: .utf8)!
     static let secretPlain = "my secret"
-    static let secretPlainData = secretPlain.utf8Data!
+    static let secretPlainData = CryptoKit.humanFriendlyPlainSecretToDataPlainSecret(secretPlain)!
 }
 
 extension CryptoKit {
@@ -34,14 +34,14 @@ extension CryptoKit {
     
         // Sender: Generating symmetric key and encrpting data USING shared symmetric key
         let senderSymmetricKey = CryptoKit.generateSymmetricKeyBetween(TestVars.AliceSender.privateKey, and: TestVars.BobReceiver.publicKey, salt: TestVars.salt)!
-        let encryptedData      = CryptoKit.encrypt(plainSecret: TestVars.secretPlainData, using: senderSymmetricKey)!
+        let encryptedData      = CryptoKit.encrypt(data: TestVars.secretPlainData, using: senderSymmetricKey)!
         
         // Receiver: Generating symmetric key and decrypting data USING shared symmetric key
         let reveiverSymmetricKey = CryptoKit.generateSymmetricKeyBetween(TestVars.BobReceiver.privateKey, and: TestVars.AliceSender.publicKey, salt: TestVars.salt)!
         let decryptedData        = CryptoKit.decrypt(encryptedData: encryptedData, using: reveiverSymmetricKey)
     
         // The decripted data, should be equals with the secret
-        return decryptedData?.stringFromUtf8 ?? "" == TestVars.secretPlain
+        return CryptoKit.dataPlainSecretToHumanFriendlyPlainSecret(decryptedData) == TestVars.secretPlain
     }
     
     //
@@ -50,7 +50,7 @@ extension CryptoKit {
     static func sampleUsage2() -> Bool {
     
         // Sender: Generating symmetric key and encrpting data USING public and private keys
-        let encryptedData = CryptoKit.encrypt(plainSecret: TestVars.secretPlainData,
+        let encryptedData = CryptoKit.encrypt(data: TestVars.secretPlainData,
                                               sender: TestVars.AliceSender.privateKey,
                                               receiver: TestVars.BobReceiver.publicKey,
                                               salt: TestVars.salt)!
@@ -62,7 +62,7 @@ extension CryptoKit {
                                               salt: TestVars.salt)
     
         // The decripted data, should be equals with the secret
-        return decryptedData?.stringFromUtf8 ?? "" == TestVars.secretPlain
+        return CryptoKit.dataPlainSecretToHumanFriendlyPlainSecret(decryptedData) ?? "" == TestVars.secretPlain
     }
     
     //
@@ -72,6 +72,31 @@ extension CryptoKit {
         let senderSymmetricKey   = CryptoKit.generateSymmetricKeyBetween(TestVars.AliceSender.privateKey, and: TestVars.BobReceiver.publicKey, salt: TestVars.salt)!
         let reveiverSymmetricKey = CryptoKit.generateSymmetricKeyBetween(TestVars.BobReceiver.privateKey, and: TestVars.AliceSender.publicKey, salt: TestVars.salt)!
         return senderSymmetricKey == reveiverSymmetricKey
+    }
+    
+    //
+    // Test 
+    //
+    static func testDataToStringConversions() -> Bool {
+        
+        let plainSecretUtf8Data = CryptoKit.humanFriendlyPlainSecretToDataPlainSecret(TestVars.secretPlain)
+        
+        let aliceEncryptedData = CryptoKit.encrypt(data: plainSecretUtf8Data!,
+                                                   sender: TestVars.AliceSender.privateKey,
+                                                   receiver: TestVars.BobReceiver.publicKey,
+                                                   salt: TestVars.salt)!
+        
+        let aliceEncryptedDataOverTheNetwork = CryptoKit.encodeToSendOverNetwork(encrypted: aliceEncryptedData)
+        
+        guard let bobEncryptedData = CryptoKit.decodeFromNetwork(string: aliceEncryptedDataOverTheNetwork) else { return false }
+
+        let bobDecryptedData = CryptoKit.decrypt(encryptedData: bobEncryptedData,
+                                                 receiver: TestVars.BobReceiver.privateKey,
+                                                 sender: TestVars.AliceSender.publicKey,
+                                                 salt: TestVars.salt)
+
+        let secretPlain = CryptoKit.dataPlainSecretToHumanFriendlyPlainSecret(bobDecryptedData)
+        return secretPlain == TestVars.secretPlain
     }
     
     //
@@ -89,17 +114,17 @@ extension CryptoKit {
         let publicKey = CryptoKit.generatePrivateKey().publicKey
         
         // Test : After a clean up, no keys should exist
-        CryptoKit.PublicKeysHotStorage.store(publicKey: publicKey.base64String, for: userId)
+        CryptoKit.PublicKeysHotStorage.store(publicKey: publicKey.toBase64String, for: userId)
         CryptoKit.PublicKeysHotStorage.cleanAll()
         guard CryptoKit.PublicKeysHotStorage.get(for: userId) == nil else { return false }
         
         // Test : After fetching a stored Public Key, should have the same value that the key that was used to store it
-        CryptoKit.PublicKeysHotStorage.store(publicKey: publicKey.base64String, for: userId)
+        CryptoKit.PublicKeysHotStorage.store(publicKey: publicKey.toBase64String, for: userId)
         let storedPublicKey = CryptoKit.PublicKeysHotStorage.get(for: userId)
-        guard storedPublicKey?.base64String == publicKey.base64String else { return false }
+        guard storedPublicKey?.toBase64String == publicKey.toBase64String else { return false }
         
         // Test : Deleting a key
-        CryptoKit.PublicKeysHotStorage.store(publicKey: publicKey.base64String, for: userId)
+        CryptoKit.PublicKeysHotStorage.store(publicKey: publicKey.toBase64String, for: userId)
         CryptoKit.PublicKeysHotStorage.delete(for: userId)
         guard CryptoKit.PublicKeysHotStorage.get(for: userId) == nil else { return false }
 

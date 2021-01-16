@@ -7,7 +7,14 @@ import CryptoKit
  
 public struct CryptoKit {
     private init() { }
+    
+    static func generatePrivateKey() -> Curve25519.KeyAgreement.PrivateKey { return Curve25519.KeyAgreement.PrivateKey() }
+
 }
+
+//
+// MARK: - Encrypt & decrypt methods
+//
 
 public extension CryptoKit {
 
@@ -16,13 +23,15 @@ public extension CryptoKit {
         return sharedSecret.hkdfDerivedSymmetricKey(using: SHA256.self, salt: salt, sharedInfo: Data(), outputByteCount: 32)
     }
         
-    static func encrypt(plainSecret: Data, using symmetricKey: SymmetricKey) -> Data? {
-        return try! ChaChaPoly.seal(plainSecret, using: symmetricKey).combined
+    // data: Data -> utf8 format, salt: Data -> utf8 format
+    static func encrypt(data: Data, using symmetricKey: SymmetricKey) -> Data? {
+        return try! ChaChaPoly.seal(data, using: symmetricKey).combined
     }
     
-    static func encrypt(plainSecret: Data, sender: Curve25519.KeyAgreement.PrivateKey, receiver: Curve25519.KeyAgreement.PublicKey, salt: Data) -> Data? {
+    // data: Data -> utf8 format, salt: Data -> utf8 format
+    static func encrypt(data: Data, sender: Curve25519.KeyAgreement.PrivateKey, receiver: Curve25519.KeyAgreement.PublicKey, salt: Data) -> Data? {
         guard let symmetricKey = generateSymmetricKeyBetween(sender, and: receiver, salt: salt) else { return nil }
-        return encrypt(plainSecret: plainSecret, using: symmetricKey)
+        return encrypt(data: data, using: symmetricKey)
     }
     
     static func decrypt(encryptedData: Data, using symmetricKey: SymmetricKey) -> Data? {
@@ -38,8 +47,13 @@ public extension CryptoKit {
         return decrypt(encryptedData: encryptedData, using: symmetricKey)
     }
     
-    static func generatePrivateKey() -> Curve25519.KeyAgreement.PrivateKey { return Curve25519.KeyAgreement.PrivateKey() }
-    
+ }
+
+//
+// MARK: - PublicKey conversion utils
+//
+
+public extension CryptoKit {
     static func base64String(with publicKey: Curve25519.KeyAgreement.PublicKey) -> String {
         publicKey.rawRepresentation.base64EncodedString(options: Data.Base64EncodingOptions(rawValue: 0))
     }
@@ -50,11 +64,47 @@ public extension CryptoKit {
         }
         return publicKey
     }
- }
- 
+}
+
+//
+// MARK: - Human friendly conversion utils
+//
+
+public extension CryptoKit {
+    static func humanFriendlyPlainSecretToDataPlainSecret(_ string: String?) -> Data? {
+        guard string != nil else { return nil }
+        return string!.data(using: .utf8)
+    }
+    
+    static func dataPlainSecretToHumanFriendlyPlainSecret(_ data: Data?) -> String? {
+        guard data != nil else { return nil }
+        return String(data: data!, encoding: .utf8)
+    }
+}
+
+//
+// MARK: - Network conversion utils
+//
+
+public extension CryptoKit {
+    
+    /// Receives encrypted Data, and converts into a String so it can be stored or sent over the network
+    static func encodeToSendOverNetwork(encrypted: Data) -> String {
+        return encrypted.base64EncodedString(options: Data.Base64EncodingOptions(rawValue: 0))
+    }
+    
+    /// Receives an encrypted String, and converts into encrypted Data
+    static func decodeFromNetwork(string: String) -> Data? {
+        return Data(base64Encoded: string)
+    }
+}
+
+//
+// MARK: - Private
+//
+
 private extension CryptoKit {
     static func generateSecretBetween(_ a: Curve25519.KeyAgreement.PrivateKey, and b: Curve25519.KeyAgreement.PublicKey) -> SharedSecret? {
         return try? a.sharedSecretFromKeyAgreement(with: b)
     }
-    
 }
