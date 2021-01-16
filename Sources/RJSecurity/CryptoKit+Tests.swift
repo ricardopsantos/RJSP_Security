@@ -22,7 +22,7 @@ fileprivate struct TestVars {
 
     static let salt = "6beab91f-4a1a-4449-96cb-b6e0edb30776".data(using: .utf8)!
     static let secretPlain = "my secret"
-    static let secretPlainData = CryptoKit.humanFriendlyPlainSecretToDataPlainSecret(secretPlain)!
+    static let secretPlainData = CryptoKit.humanFriendlyPlainMessageToDataPlainMessage(secretPlain)!
 }
 
 extension CryptoKit {
@@ -41,7 +41,7 @@ extension CryptoKit {
         let decryptedData        = CryptoKit.decrypt(encryptedData: encryptedData, using: reveiverSymmetricKey)
     
         // The decripted data, should be equals with the secret
-        return CryptoKit.dataPlainSecretToHumanFriendlyPlainSecret(decryptedData) == TestVars.secretPlain
+        return CryptoKit.dataPlainMessageToHumanFriendlyPlainMessage(decryptedData) == TestVars.secretPlain
     }
     
     //
@@ -62,7 +62,7 @@ extension CryptoKit {
                                               salt: TestVars.salt)
     
         // The decripted data, should be equals with the secret
-        return CryptoKit.dataPlainSecretToHumanFriendlyPlainSecret(decryptedData) ?? "" == TestVars.secretPlain
+        return CryptoKit.dataPlainMessageToHumanFriendlyPlainMessage(decryptedData) ?? "" == TestVars.secretPlain
     }
     
     //
@@ -79,7 +79,7 @@ extension CryptoKit {
     //
     static func testDataToStringConversions() -> Bool {
         
-        let plainSecretUtf8Data = CryptoKit.humanFriendlyPlainSecretToDataPlainSecret(TestVars.secretPlain)
+        let plainSecretUtf8Data = CryptoKit.humanFriendlyPlainMessageToDataPlainMessage(TestVars.secretPlain)
         
         let aliceEncryptedData = CryptoKit.encrypt(data: plainSecretUtf8Data!,
                                                    sender: TestVars.AliceSender.privateKey,
@@ -95,7 +95,7 @@ extension CryptoKit {
                                                  sender: TestVars.AliceSender.publicKey,
                                                  salt: TestVars.salt)
 
-        let secretPlain = CryptoKit.dataPlainSecretToHumanFriendlyPlainSecret(bobDecryptedData)
+        let secretPlain = CryptoKit.dataPlainMessageToHumanFriendlyPlainMessage(bobDecryptedData)
         return secretPlain == TestVars.secretPlain
     }
     

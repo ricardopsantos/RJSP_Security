@@ -8,7 +8,7 @@ import CryptoKit
 public struct CryptoKit {
     private init() { }
     
-    static func generatePrivateKey() -> Curve25519.KeyAgreement.PrivateKey { return Curve25519.KeyAgreement.PrivateKey() }
+    public static func generatePrivateKey() -> Curve25519.KeyAgreement.PrivateKey { return Curve25519.KeyAgreement.PrivateKey() }
 
 }
 
@@ -71,12 +71,12 @@ public extension CryptoKit {
 //
 
 public extension CryptoKit {
-    static func humanFriendlyPlainSecretToDataPlainSecret(_ string: String?) -> Data? {
+    static func humanFriendlyPlainMessageToDataPlainMessage(_ string: String?) -> Data? {
         guard string != nil else { return nil }
         return string!.data(using: .utf8)
     }
     
-    static func dataPlainSecretToHumanFriendlyPlainSecret(_ data: Data?) -> String? {
+    static func dataPlainMessageToHumanFriendlyPlainMessage(_ data: Data?) -> String? {
         guard data != nil else { return nil }
         return String(data: data!, encoding: .utf8)
     }
