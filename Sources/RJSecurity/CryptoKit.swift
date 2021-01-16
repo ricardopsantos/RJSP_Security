@@ -8,7 +8,7 @@ import CryptoKit
 public struct CryptoKit {
     private init() { }
     
-    public static func generatePrivateKey() -> Curve25519.KeyAgreement.PrivateKey { return Curve25519.KeyAgreement.PrivateKey() }
+    public static func newPrivateKeyInstance() -> Curve25519.KeyAgreement.PrivateKey { return Curve25519.KeyAgreement.PrivateKey() }
 
 }
 

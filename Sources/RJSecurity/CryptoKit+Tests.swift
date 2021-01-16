@@ -10,13 +10,13 @@ fileprivate struct TestVars {
     
     struct AliceSender {
         private init() { }
-        static let privateKey = CryptoKit.generatePrivateKey()
+        static let privateKey = CryptoKit.newPrivateKeyInstance()
         static let publicKey  = privateKey.publicKey
     }
      
     struct BobReceiver {
         private init() { }
-        static let privateKey = CryptoKit.generatePrivateKey()
+        static let privateKey = CryptoKit.newPrivateKeyInstance()
         static let publicKey  = privateKey.publicKey
     }
 
@@ -111,7 +111,7 @@ extension CryptoKit {
     static func testPublicKeysHotStorage() -> Bool {
         
         let userId = "\(UUID())"
-        let publicKey = CryptoKit.generatePrivateKey().publicKey
+        let publicKey = CryptoKit.newPrivateKeyInstance().publicKey
         
         // Test : After a clean up, no keys should exist
         CryptoKit.PublicKeysHotStorage.store(publicKey: publicKey.toBase64String, for: userId)
