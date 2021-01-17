@@ -9,29 +9,13 @@ import Combine
 //
 import RJSecurity
 
-
-
-//
-//  Created by Alexey Naumov on 04.04.2020.
-//  Copyright © 2020 Alexey Naumov. All rights reserved.
-//
-
-import Combine
-
-
-
-private var cancelBag = CancelBag()
-
 let privateKey = CryptoKit.newPrivateKeyInstance()
 let sharedSalt = "ba00524d-ad11-46ac-a596-0a2998588b5a".utf8Data!
 let userID = "\(UUID())"
 
 class AutenticationVC: UIViewController {
     
-    func showAlert(with: String) {
-        let alert = UIAlertController(title: "Server response", message: with, preferredStyle: .alert)
-        self.present(alert, animated: true, completion: nil)
-    }
+    private var cancelBag = CancelBag()
         
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -66,6 +50,10 @@ class AutenticationVC: UIViewController {
 
     }
 
+    func showAlert(with: String) {
+        let alert = UIAlertController(title: "Server response", message: with, preferredStyle: .alert)
+        self.present(alert, animated: true, completion: nil)
+    }
 
 }
 

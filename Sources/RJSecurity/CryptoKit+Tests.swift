@@ -32,6 +32,45 @@ extension CryptoKit {
     //
     static func sampleUsage1() -> Bool {
     
+        print("\n\n\n\n\n\n")
+        struct AliceSender {
+            private init() { }
+            static let privateKey = CryptoKit.newPrivateKeyInstance()
+            static let publicKey  = privateKey.publicKey
+        }
+         
+        struct BobReceiver {
+            private init() { }
+            static let privateKey = CryptoKit.newPrivateKeyInstance()
+            static let publicKey  = privateKey.publicKey
+        }
+
+        let salt = "6beab91f-4a1a-4449-96cb-b6e0edb30776".data(using: .utf8)!
+        let aliceSecret = "my secret"
+        let aliceSecretData = aliceSecret.data(using: .utf8)
+        
+        print("aliceSecret: \(aliceSecret)\n")
+
+        // Sender: Generating symmetric key and encrpting data USING shared symmetric key
+        let senderSymmetricKey = CryptoKit.generateSymmetricKeyBetween(AliceSender.privateKey, and: BobReceiver.publicKey, salt: salt)!
+        let encryptedData      = CryptoKit.encrypt(data: aliceSecretData!, using: senderSymmetricKey)!
+
+        // Receiver: Generating symmetric key and decrypting data USING shared symmetric key
+        let reveiverSymmetricKey = CryptoKit.generateSymmetricKeyBetween(BobReceiver.privateKey, and: AliceSender.publicKey, salt: salt)!
+        let decryptedData        = CryptoKit.decrypt(encryptedData: encryptedData, using: reveiverSymmetricKey)
+
+        let bobSecret = String(data: decryptedData!, encoding: .utf8)!
+        print("bobSecret: \(bobSecret)\n")
+
+        // The decripted data, should be equals with the secret
+        return CryptoKit.dataPlainMessageToHumanFriendlyPlainMessage(decryptedData) == TestVars.secretPlain
+    }
+    
+    //
+    // Encrypt and decrypt using shared symmetric key
+    //
+    static func sampleUsageX() -> Bool {
+    
         // Sender: Generating symmetric key and encrpting data USING shared symmetric key
         let senderSymmetricKey = CryptoKit.generateSymmetricKeyBetween(TestVars.AliceSender.privateKey, and: TestVars.BobReceiver.publicKey, salt: TestVars.salt)!
         let encryptedData      = CryptoKit.encrypt(data: TestVars.secretPlainData, using: senderSymmetricKey)!
