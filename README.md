@@ -15,7 +15,7 @@
 
 ## About
 
-Utilities and sample [__client app__](https://github.com/ricardopsantos/RJSP_Security/tree/master/_RJSecuritySampleClient) and [__web server__](https://github.com/ricardopsantos/RJSP_Security/tree/master/_RJSecuritySampleServer) around [__Apple CryptoKit__](https://developer.apple.com/documentation/cryptokit) concepts.
+Utilities framework and sample [__client app__](https://github.com/ricardopsantos/RJSP_Security/tree/master/_RJSecuritySampleClient) and [__web server__](https://github.com/ricardopsantos/RJSP_Security/tree/master/_RJSecuritySampleServer) providing an end-to-end encrypted communication using [__Apple CryptoKit__](https://developer.apple.com/documentation/cryptokit) concepts.
 
 ## Sample Usage
 
@@ -71,7 +71,7 @@ let decryptedData = CryptoKit.decrypt(encryptedData: encryptedData,
 
 ## Sample working projects
 
-Inside the folders [__RJSecuritySampleClient__](https://github.com/ricardopsantos/RJSP_Security/tree/master/_RJSecuritySampleClient)) and [__RJSecuritySampleServer__](https://github.com/ricardopsantos/RJSP_Security/tree/master/_RJSecuritySampleServer) can be found sample client app (Swift) and sample server web app (Vapor Swift) ready to use. 
+Inside the folders [__RJSecuritySampleClient__](https://github.com/ricardopsantos/RJSP_Security/tree/master/_RJSecuritySampleClient) and [__RJSecuritySampleServer__](https://github.com/ricardopsantos/RJSP_Security/tree/master/_RJSecuritySampleServer) can be found sample client app (Swift) and sample server web app (Vapor Swift) ready to use. 
 
 Both the client app and server use [__RJSP_Security__](https://github.com/ricardopsantos/RJSP_Security) lib installed via SPM and are a live working example of the key exchange process, follewd by a secure comunication.
 
@@ -84,7 +84,7 @@ Open both projects on Xcode
 
 The projects samples flow is as follows:
 
-__Step 1 :__ The app (client) send is public key to the server (on the request body). It also sends his userID (on the request header). 
+Step 1 : The app (client) send is public key to the server (on the request body). It also sends his userID (on the request header).
 
 ```swift
 static func session(publicKey: Curve25519.KeyAgreement.PublicKey, userID: String) -> RequestModel {
@@ -104,7 +104,7 @@ static func session(publicKey: Curve25519.KeyAgreement.PublicKey, userID: String
 let sessionPublisher = webAPI.session(publicKey: privateKey.publicKey, userID: userID)
 ```
 
-__Step 2:__ The server store the userID and the user public key (for future secure comunication) and returns to the client app the server public key.
+Step 2: The server store the userID and the user public key (for future secure communication) and returns to the client app the server public key.
 
 ```swift
 app.post(Session.path) { req -> Session.ResponseModel in
@@ -123,7 +123,7 @@ app.post(Session.path) { req -> Session.ResponseModel in
 }
 ```
     
-__Step 3:__ The client app receives the server public key, and then with is (client) private key do a secure/encripted request to the server.
+Step 3: The client app receives the server public key, and then with is (client) private key do a secure/encrypted request to the server.
 
 ```swift
 static func secure(encrypted: Data, userID: String) -> RequestModel {
@@ -152,7 +152,7 @@ let secureRequestPublisher = serverPublicKeyPublisher.flatMap { (publicKey) -> A
 }
 ```
 
-__Step 4:__ The server receives the encripted request, and decript it using the client public key (stored on step 1) and his (server) private key. After decripting the message, the server just return it as a "proof" of sucess.
+Step 4: The server receives the encrypted request, and decrypt it using the client public key (stored on step 1) and his (server) private key. After decrypting the message, the server just return it as a "proof" of success.
 
 ```swift
 app.post(SecureRequest.path) { req -> SecureRequest.ResponseModel in
