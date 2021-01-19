@@ -12,13 +12,20 @@ public extension CryptoKit {
         return String(data: data, encoding: .utf8)
     }
 
-    
     struct StringRequestBody: Codable {
         public let secret: String
+        init(secret: String) {
+            // param [secret] should allready be encrypted
+            self.secret = secret
+        }
     }
     
     struct DataRequestBody: Codable {
         public let secret: Data
+        init(secret: Data) {
+            // param [secret] should allready be encrypted
+            self.secret = secret
+        }
     }
 }
  
