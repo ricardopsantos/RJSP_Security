@@ -24,12 +24,11 @@ public struct RequestsBuilder {
     }
     
     static func secure(encrypted: Data, userID: String) -> RequestModel {
-        let httpBody = CryptoKit.DataRequestBody.init(secret: encrypted)
-        
+        let httpBody = CryptoKit.DataRequestBody(secret: encrypted)
         return RequestModel(path: "secureRequest",
                             httpMethod: .post,
-                            httpBodyDic: httpBody,
-                            httpBodyCodable: <#Codable?#>,
+                            httpBodyDic: nil,
+                            httpBodyCodable: httpBody,
                             userId: userID)
     }
     
