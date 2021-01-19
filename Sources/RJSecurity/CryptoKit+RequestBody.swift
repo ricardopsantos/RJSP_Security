@@ -39,7 +39,7 @@ public extension CryptoKit.DataRequestBody {
 
     // Maps a [DataRequestBody] into a [StringRequestBody]
     var toStringRequestBody: CryptoKit.StringRequestBody {
-        let secret = CryptoKit.encondeFroNetworkTransport(encrypted: self.secret)
+        let secret = CryptoKit.encondeForNetworkTransport(encrypted: self.secret)
         return CryptoKit.StringRequestBody(secret: secret)
     }
     
