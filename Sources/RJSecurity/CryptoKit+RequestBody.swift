@@ -7,31 +7,34 @@ import CryptoKit
  
 public extension CryptoKit {
 
+    fileprivate static func toJSON<T:Codable>(some : T) -> String? {
+        guard let data = try? JSONEncoder().encode(some.self) else { return nil }
+        return String(data: data, encoding: .utf8)
+    }
+
+    
     struct StringRequestBody: Codable {
-        let secret: String
+        public let secret: String
     }
     
     struct DataRequestBody: Codable {
-        let secret: Data
-    }
- }
- 
-
-extension CryptoKit.StringRequestBody {
-    var toJSON: String {
-        return (String(data: try! JSONEncoder().encode(self), encoding: .utf8)!)
+        public let secret: Data
     }
 }
+ 
+public extension CryptoKit.StringRequestBody {
+    var toJSON: String? { return CryptoKit.toJSON(some: self) }
+}
 
-extension CryptoKit.DataRequestBody {
+public extension CryptoKit.DataRequestBody {
     
+    var toJSON: String? { return CryptoKit.toJSON(some: self) }
+
     // Maps a [DataRequestBody] into a [StringRequestBody]
     var toStringRequestBody: CryptoKit.StringRequestBody {
         let secret = CryptoKit.encondeFroNetworkTransport(encrypted: self.secret)
         return CryptoKit.StringRequestBody(secret: secret)
     }
     
-    var toJSON: String {
-        return (String(data: try! JSONEncoder().encode(self), encoding: .utf8)!)
-    }
 }
+
