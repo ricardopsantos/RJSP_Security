@@ -22,10 +22,16 @@ class AutenticationVC: UIViewController {
         
         let webAPI = WebAPI()
 
-        // Session request...
+        //
+        // STEP 1 : The app (client) sends its Public key to the server (on the request body).
+        // It also sends its userID (on the request header).
+        //
         let sessionPublisher = webAPI.session(publicKey: privateKey.publicKey, userID: userID)
 
-        // Session response with server public key...
+        //
+        // STEPS 3: The client app receives the server Public key, and then with its (client) Private key
+        // executes a secure/encrypted request to the server.
+        //
         let serverPublicKeyPublisher = sessionPublisher.compactMap { $0.publicKey }
         
         // Secure request...

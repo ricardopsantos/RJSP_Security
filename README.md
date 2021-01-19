@@ -17,6 +17,8 @@
 
 Utilities framework and sample [__client app__](https://github.com/ricardopsantos/RJSP_Security/tree/master/_RJSecuritySampleClient) and [__web server__](https://github.com/ricardopsantos/RJSP_Security/tree/master/_RJSecuritySampleServer) providing end-to-end encrypted communication using [__Apple CryptoKit__](https://developer.apple.com/documentation/cryptokit) concepts.
 
+![image](_Documents/preview.1.gif)
+
 ## Sample Usage
 
 ### Given...
