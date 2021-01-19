@@ -125,7 +125,7 @@ extension CryptoKit {
                                                    receiver: TestVars.BobReceiver.publicKey,
                                                    salt: TestVars.salt)!
         
-        let aliceEncryptedDataOverTheNetwork = CryptoKit.encondeFroNetworkTransport(encrypted: aliceEncryptedData)
+        let aliceEncryptedDataOverTheNetwork = CryptoKit.encondeForNetworkTransport(encrypted: aliceEncryptedData)
         
         guard let bobEncryptedData = CryptoKit.decodeFromNetworkTransport(string: aliceEncryptedDataOverTheNetwork) else { return false }
 

@@ -89,7 +89,7 @@ public extension CryptoKit {
 public extension CryptoKit {
     
     /// Receives encrypted Data, and converts into a String so it can be stored or sent over the network
-    static func encondeFroNetworkTransport(encrypted: Data) -> String {
+    static func encondeForNetworkTransport(encrypted: Data) -> String {
         return encrypted.base64EncodedString(options: Data.Base64EncodingOptions(rawValue: 0))
     }
     

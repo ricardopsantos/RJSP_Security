@@ -9,11 +9,11 @@ public struct SecureRequest {
 
     final class RequestModel: Content {
         public var secret: String?
-        public var secretData: Data? { CryptoKit.decodeFromNetwork(string: secret) }
+        public var secretData: Data? { CryptoKit.decodeFromNetworkTransport(string: secret) }
 
         init(plain: Data, sender: Curve25519.KeyAgreement.PrivateKey, receiver: Curve25519.KeyAgreement.PublicKey, salt: Data) {
             let encrypted = CryptoKit.encrypt(data: plain, sender: sender, receiver: receiver, salt: salt)!
-            secret = CryptoKit.encodeToSendOverNetwork(encrypted: encrypted)
+            secret = CryptoKit.encondeForNetworkTransport(encrypted: encrypted)
         }
     }
 
