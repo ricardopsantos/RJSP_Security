@@ -89,12 +89,12 @@ public extension CryptoKit {
 public extension CryptoKit {
     
     /// Receives encrypted Data, and converts into a String so it can be stored or sent over the network
-    static func encodeToSendOverNetwork(encrypted: Data) -> String {
+    static func encondeFroNetworkTransport(encrypted: Data) -> String {
         return encrypted.base64EncodedString(options: Data.Base64EncodingOptions(rawValue: 0))
     }
     
     /// Receives an encrypted String, and converts into encrypted Data
-    static func decodeFromNetwork(string: String?) -> Data? {
+    static func decodeFromNetworkTransport(string: String?) -> Data? {
         guard string != nil else { return nil }
         return Data(base64Encoded: string!)
     }

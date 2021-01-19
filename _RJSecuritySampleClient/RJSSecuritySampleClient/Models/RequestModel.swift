@@ -8,7 +8,8 @@ import Foundation
 public struct RequestModel {
     public let path: String
     public let httpMethod: HttpMethod
-    public let httpBody: [String: String]
+    public let httpBodyDic: [String: String]?
+    public let httpBodyCodable: Codable?
     public let userId: String
 }
 

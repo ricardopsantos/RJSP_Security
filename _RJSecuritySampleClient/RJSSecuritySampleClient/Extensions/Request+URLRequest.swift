@@ -14,7 +14,7 @@ extension RequestModel {
         var request = URLRequest(url: theURL)
         request.httpMethod = httpMethod.rawValue.uppercased()
         
-        if let httpBody = try? JSONSerialization.data(withJSONObject: httpBody, options: .prettyPrinted) {
+        if let httpBody = try? JSONSerialization.data(withJSONObject: httpBodyDic, options: .prettyPrinted) {
             request.httpBody = httpBody
             request.addValue("application/json", forHTTPHeaderField: "Content-Type")
             request.addValue("application/json", forHTTPHeaderField: "Accept")

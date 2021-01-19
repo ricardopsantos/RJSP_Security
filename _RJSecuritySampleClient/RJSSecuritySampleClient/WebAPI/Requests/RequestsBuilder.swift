@@ -18,15 +18,18 @@ public struct RequestsBuilder {
         
         return RequestModel(path: "session",
                             httpMethod: .post,
-                            httpBody: httpBody,
+                            httpBodyDic: httpBody,
+                            httpBodyCodable: nil,
                             userId: userID)
     }
     
     static func secure(encrypted: Data, userID: String) -> RequestModel {
         let httpBody = ["secret": CryptoKit.encodeToSendOverNetwork(encrypted: encrypted)]
+        
         return RequestModel(path: "secureRequest",
                             httpMethod: .post,
-                            httpBody: httpBody,
+                            httpBodyDic: httpBody,
+                            httpBodyCodable: <#Codable?#>,
                             userId: userID)
     }
     
