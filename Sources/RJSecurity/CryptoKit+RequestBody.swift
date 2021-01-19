@@ -14,7 +14,7 @@ public extension CryptoKit {
 
     struct StringRequestBody: Codable {
         public let secret: String
-        init(secret: String) {
+        public init(secret: String) {
             // param [secret] should allready be encrypted
             self.secret = secret
         }
@@ -22,7 +22,7 @@ public extension CryptoKit {
     
     struct DataRequestBody: Codable {
         public let secret: Data
-        init(secret: Data) {
+        public init(secret: Data) {
             // param [secret] should allready be encrypted
             self.secret = secret
         }

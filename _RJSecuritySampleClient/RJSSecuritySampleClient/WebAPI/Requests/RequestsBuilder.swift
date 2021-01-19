@@ -24,7 +24,7 @@ public struct RequestsBuilder {
     }
     
     static func secure(encrypted: Data, userID: String) -> RequestModel {
-        let httpBody = CryptoKit.DataRequestBody(
+        let httpBody = CryptoKit.DataRequestBody.init(secret: encrypted)
         
         return RequestModel(path: "secureRequest",
                             httpMethod: .post,
