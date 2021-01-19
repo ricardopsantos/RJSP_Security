@@ -4,12 +4,13 @@
 //
 
 import Foundation
+import RJSecurity
 
 public struct RequestModel {
     public let path: String
     public let httpMethod: HttpMethod
     public let httpBodyDic: [String: String]?
-    public let httpBodyCodable: Codable?
+    public let httpBodyCodable: CryptoKit.DataRequestBody?
     public let userId: String
 }
 
